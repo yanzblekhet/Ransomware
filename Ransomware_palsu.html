@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>YANZY AMETEIS - Ransomware Simulation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+  /* Reset and base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html, body {
+    height: 100%;
+    background: radial-gradient(circle at center, #0d0d0d 0%, #050505 100%);
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    color: #FF0033;
+    user-select: none;
+  }
+
+  /* Container */
+  .container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Glitch text styles */
+  .glitch {
+    position: relative;
+    font-size: 6vw;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    animation: flicker 3s infinite alternate;
+    color: #FF0033;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    overflow: hidden;
+    color: #FF0033;
+    clip: rect(0, 900px, 0, 0);
+  }
+  .glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 #00f0ff;
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 #ff00c8;
+    animation: glitch-anim2 2.5s infinite linear alternate-reverse;
+  }
+
+  /* Subtext */
+  .subtext {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #ff003399;
+    letter-spacing: 0.15em;
+    animation: pulse 3s infinite;
+  }
+
+  /* Matrix background */
+  .matrix {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Pulsing background flicker */
+  @keyframes flicker {
+    0%, 100% {opacity: 1;}
+    40%, 60% {opacity: 0.8;}
+    50% {opacity: 0.4;}
+  }
+
+  /* Glitch clip animations */
+  @keyframes glitch-anim {
+    0% {
+      clip: rect(0, 900px, 0, 0);
+    }
+    10% {
+      clip: rect(0, 900px, 45px, 0);
+      transform: translate(-2px, -2px);
+    }
+    20% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    30% {
+      clip: rect(0, 900px, 70px, 0);
+      transform: translate(-2px, 0);
+    }
+    40% {
+      clip: rect(35px, 900px, 100px, 0);
+      transform: translate(2px, 2px);
+    }
+    50% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    60% {
+      clip: rect(0, 900px, 30px, 0);
+      transform: translate(2px, 1px);
+    }
+    70% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    80% {
+      clip: rect(10px, 900px, 70px, 0);
+      transform: translate(-2px, 0);
+    }
+    90% {
+      clip: rect(0, 900px, 45px, 0);
+      transform: translate(2px, -2px);
+    }
+    100% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+  }
+  @keyframes glitch-anim2 {
+    0% {
+      clip: rect(0, 900px, 0, 0);
+    }
+    10% {
+      clip: rect(20px, 900px, 60px, 0);
+      transform: translate(2px, 2px);
+    }
+    20% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    30% {
+      clip: rect(45px, 900px, 90px, 0);
+      transform: translate(2px, -2px);
+    }
+    40% {
+      clip: rect(0, 900px, 30px, 0);
+      transform: translate(-2px, 2px);
+    }
+    50% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    60% {
+      clip: rect(25px, 900px, 70px, 0);
+      transform: translate(-2px, 0);
+    }
+    70% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+    80% {
+      clip: rect(10px, 900px, 50px, 0);
+      transform: translate(1px, 2px);
+    }
+    90% {
+      clip: rect(0, 900px, 20px, 0);
+      transform: translate(-1px, -2px);
+    }
+    100% {
+      clip: rect(0, 900px, 0, 0);
+      transform: translate(0);
+    }
+  }
+
+  /* Pulse animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Scrolling horizontal red stripe animation */
+  .stripes {
+    position: absolute;
+    bottom: 30px;
+    left: -100%;
+    width: 300%;
+    height: 5px;
+    background: repeating-linear-gradient(
+      45deg,
+      #ff0033,
+      #ff0033 15px,
+      #660000 15px,
+      #660000 30px
+    );
+    animation: slideStripes 4s linear infinite;
+    z-index: 1;
+  }
+  @keyframes slideStripes {
+    from {left: -100%;}
+    to {left: 0;}
+  }
+</style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Ransomware simulation screen">
+    <div class="glitch" aria-live="assertive" aria-atomic="true" data-text="YANZY AMETEIS">YANZY AMETEIS</div>
+    <div class="subtext">YOUR FILES HAVE BEEN ENCRYPTED</div>
+    <div class="subtext" style="animation-delay: 1.5s;">TO RECOVER, SEND 10 BTC TO THE ADDRESS</div>
+    <div class="subtext" style="animation-delay: 3s; font-size: 1rem; letter-spacing: 0.1em; color: #ff003344;">
+      3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5
+    </div>
+    <div class="stripes"></div>
+    <canvas class="matrix" aria-hidden="true"></canvas>
+  </div>
+<script>
+  // Matrix rain effect on canvas using green monospace characters
+  const canvas = document.querySelector('canvas.matrix');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let columns;
+  let drops;
+
+  const characters = "01\u30A0-\u30FF\u2588\u2591\u2592\u2593\u25A0\u25A1".split('');
+
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    columns = Math.floor(width / fontSize);
+    drops = new Array(columns).fill(1);
+  }
+
+  const fontSize = 16;
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = characters[Math.floor(Math.random() * characters.length)];
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+
+      // Bright leading character
+      ctx.fillStyle = '#aaffaa';
+      ctx.fillText(text, x, y);
+
+      // Trailing character with lower brightness
+      ctx.fillStyle = '#0f0';
+      ctx.fillText(text, x, y - fontSize);
+
+      if (y > height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+
+  resizeCanvas();
+  setInterval(draw, 50);
+
+  // Flash background red flicker loop
+  (function flickerBackground() {
+    const container = document.querySelector('.container');
+    const flickerTimes = [80, 150, 120, 160]; // flicker durations in ms
+    let flickerStep = 0;
+
+    function flick() {
+      if (flickerStep % 2 === 0) {
+        container.style.background = 'radial-gradient(circle at center, #400000 0%, #100000 100%)';
+      } else {
+        container.style.background = 'radial-gradient(circle at center, #0d0d0d 0%, #050505 100%)';
+      }
+      flickerStep = (flickerStep + 1) % (flickerTimes.length * 2);
+      setTimeout(flick, flickerTimes[flickerStep % flickerTimes.length]);
+    }
+    flick();
+  })();
+</script>
+</body>
+</html>
+
+```
