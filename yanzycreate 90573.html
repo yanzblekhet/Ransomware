@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Click Button</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .anti-click-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .anti-click-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .anti-click-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.2) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .anti-click-button:hover::before {
+            transform: translateX(0);
+        }
+
+        .anti-click-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .anti-click-button:disabled::before {
+            transform: translateX(-100%);
+        }
+    </style>
+</head>
+<body>
+
+    <button class="anti-click-button" id="myButton">Click Me</button>
+
+    <script>
+        const button = document.getElementById('myButton');
+
+        button.addEventListener('click', () => {
+            button.disabled = true;
+            button.textContent = "Processing...";
+
+            // Simulate a process (e.g., API call)
+            setTimeout(() => {
+                button.disabled = false;
+                button.textContent = "Click Me Again";
+            }, 3000); // Re-enable after 3 seconds
+        });
+    </script>
+
+</body>
+</html>
+```
