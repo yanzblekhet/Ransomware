@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kirim Lokasi</title>
+<style>
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#sendLocationBtn {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#sendLocationBtn:hover {
+    background-color: #0056b3;
+}
+
+#status {
+    margin-top: 20px;
+    font-style: italic;
+    color: #777;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kirim Lokasi Anda</h1>
+    <button id="sendLocationBtn">Kirim Lokasi</button>
+    <p id="status"></p>
+</div>
+
+<script>
+document.getElementById('sendLocationBtn').addEventListener('click', function() {
+    if (navigator.geolocation) {
+        document.getElementById('status').innerText = "Mencari lokasi...";
+        navigator.geolocation.getCurrentPosition(sendLocation, handleLocationError);
+    } else {
+        document.getElementById('status').innerText = "Geolocation tidak didukung oleh browser ini.";
+    }
+});
+
+function sendLocation(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const telegramBotToken = '8011320429:AAGozvscDyRHBQQRK_vOKlEYY3K8u_CDCwI';
+    const telegramChatId = '7739144010';
+    const message = `Lokasi: Latitude ${latitude}, Longitude ${longitude}`;
+    const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${message}`;
+
+    fetch(telegramApiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                document.getElementById('status').innerText = "Lokasi berhasil dikirim!";
+            } else {
+                document.getElementById('status').innerText = "Gagal mengirim lokasi. Error: " + data.description;
+            }
+        })
+        .catch(error => {
+            document.getElementById('status').innerText = "Terjadi kesalahan: " + error;
+        });
+}
+
+function handleLocationError(error) {
+    let errorMessage = "Gagal mendapatkan lokasi: ";
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            errorMessage += "Izin ditolak oleh pengguna.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            errorMessage += "Informasi lokasi tidak tersedia.";
+            break;
+        case error.TIMEOUT:
+            errorMessage += "Waktu permintaan lokasi habis.";
+            break;
+        case error.UNKNOWN_ERROR:
+            errorMessage += "Terjadi kesalahan yang tidak diketahui.";
+            break;
+    }
+    document.getElementById('status').innerText = errorMessage;
+}
+</script>
+
+</body>
+</html>
+```
