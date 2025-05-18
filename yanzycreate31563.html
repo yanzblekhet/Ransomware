@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Click Button</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+        }
+
+        .anti-click-button {
+            position: relative;
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .anti-click-button:hover {
+            background-color: #0056b3;
+        }
+
+        .anti-click-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .anti-click-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+        }
+
+        .anti-click-button:active::before {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="anti-click-button" id="myButton" onclick="disableButton()">Click Me</button>
+
+    <script>
+        function disableButton() {
+            const button = document.getElementById('myButton');
+            button.disabled = true;
+            button.innerText = 'Clicked!';
+
+            // Re-enable after a delay (optional)
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerText = 'Click Me';
+            }, 3000); // Re-enable after 3 seconds
+        }
+    </script>
+
+</body>
+</html>
+```
